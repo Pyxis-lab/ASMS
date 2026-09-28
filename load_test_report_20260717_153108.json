@@ -1,0 +1,73 @@
+{
+  "start_time": "2026-07-17T15:30:51.559735",
+  "end_time": "2026-07-17T15:31:08.947584",
+  "duration_seconds": 17.387346,
+  "config": {
+    "BASE_URL": "http://localhost:8000",
+    "MIN_WAIT": 1000,
+    "MAX_WAIT": 3000,
+    "USERNAME": "admin",
+    "PASSWORD": "admin",
+    "ENABLE_LOGIN": false,
+    "MAX_REQUESTS_PER_USER": 100,
+    "TEST_DATA": {
+      "client_names": [
+        "客户A",
+        "客户B",
+        "客户C",
+        "客户D",
+        "客户E",
+        "云南朝锐仪器有限公司",
+        "fokhrul",
+        "tanvir"
+      ],
+      "product_models": [
+        "产品A",
+        "产品B",
+        "产品C",
+        "产品D",
+        "产品E"
+      ],
+      "project_managers": [
+        "张三",
+        "李四",
+        "王五",
+        "赵六",
+        "钱七"
+      ],
+      "trial_periods": [
+        "7天",
+        "15天",
+        "30天",
+        "45天",
+        "60天"
+      ],
+      "status_values": [
+        "not_due",
+        "due",
+        "over_due"
+      ]
+    }
+  },
+  "metrics": {
+    "total_requests": 2,
+    "successful_requests": 0,
+    "failed_requests": 2,
+    "success_rate": 0.0,
+    "avg_response_time_ms": 2024.566149999373,
+    "p95_response_time_ms": 2029.4353999997838,
+    "p99_response_time_ms": 2029.4353999997838
+  },
+  "errors": [
+    {
+      "time": "2026-07-17T15:31:00.303090",
+      "url": "GET About Page",
+      "error": "[Errno 10061] [WinError 10061] No connection could be made because the target machine actively refused it."
+    },
+    {
+      "time": "2026-07-17T15:31:05.209509",
+      "url": "GET Home Page",
+      "error": "[Errno 10061] [WinError 10061] No connection could be made because the target machine actively refused it."
+    }
+  ]
+}

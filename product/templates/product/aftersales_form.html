@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load product_filters %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50">
+    <div class="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                <div>
+                    <nav class="flex items-center gap-2 mb-4 text-sm text-blue-100">
+                        <a href="{% url 'product:aftersales_list' %}" class="hover:text-white transition-colors">{% trans "Tickets" %}</a>
+                        <svg class="w-4 h-4 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                        <span class="text-blue-200">{% if record %}{{ record.after_sales_no }}{% else %}{% trans "New Ticket" %}{% endif %}</span>
+                    </nav>
+                    <h1 class="text-3xl font-bold mb-2">
+                        {% if record %}{% trans "Edit After Sales Ticket" %}{% else %}{% trans "Create After Sales Ticket" %}{% endif %}
+                    </h1>
+                    {% if record %}
+                        <p class="text-blue-100 text-sm">
+                            {% trans "Ticket No" %}: {{ record.after_sales_no }} · {% trans "Created" %}: {{ record.created_at|date:"Y-m-d H:i" }}
+                        </p>
+                    {% endif %}
+                </div>
+                <a href="{% url 'product:aftersales_list' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm text-white font-medium rounded-xl hover:bg-white/20 transition-all duration-200" aria-label="{% trans "Back to ticket list" %}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    {% trans "Back to List" %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 ">
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-lg font-semibold text-gray-900">{% trans "Product Receive" %}</h2>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
+                            {% trans "Customer Name" %} <span class="text-red-500" aria-hidden="true">*</span>
+                            <span class="sr-only">{% trans "required" %}</span>
+                        </label>
+                        <input type="text" name="user_name" value="{{ record.user_name|default:'' }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50" 
+                            required aria-required="true" placeholder="{% trans "Enter customer name" %}">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Project Site" %}</label>
+                        <input type="text" name="project_site" value="{{ record.project_site|default:'' }}"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50" 
+                            placeholder="{% trans "Enter project site" %}">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Return Date" %}</label>
+                        <input type="text" name="return_date" value="{{ record.return_date|format_date:"" }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50" 
+                            placeholder="YYYY/MM/DD">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Out of Warranty" %}</label>
+                        <select name="out_of_warranty" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50">
+                            <option value="False" {% if not record or not record.out_of_warranty %}selected{% endif %}>{% trans "No" %}</option>
+                            <option value="True" {% if record and record.out_of_warranty %}selected{% endif %}>{% trans "Yes" %}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Ticket No." %}</label>
+                        <input type="text" name="after_sales_no" value="{{ record.after_sales_no|default:'' }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50" 
+                            placeholder="{% trans "Auto-generated" %}">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Order No." %}</label>
+                        <input type="text" name="no" value="{{ record.no|default:'' }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50" 
+                            placeholder="{% trans "Enter order number" %}">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
+                            {% trans "Service Type" %} <span class="text-red-500" aria-hidden="true">*</span>
+                            <span class="sr-only">{% trans "required" %}</span>
+                        </label>
+                        <input type="text" name="after_sales_type" value="{{ record.after_sales_type|default:'' }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50" 
+                            placeholder="{% trans "Enter service type (e.g., REPAIR, RETURN, REPLACE, MAINT, SUPPORT)" %}"
+                            required aria-required="true">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Fee Details" %}</label>
+                        <textarea name="charge_details" rows="2" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50" 
+                            placeholder="{% trans "Enter fee details" %}">{{ record.charge_details|default:'' }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
+                            {% trans "Product Name" %} <span class="text-red-500" aria-hidden="true">*</span>
+                            <span class="sr-only">{% trans "required" %}</span>
+                        </label>
+                        <input type="text" name="product_name_model" value="{{ record.product_name_model|default:'' }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50" 
+                            required aria-required="true" placeholder="{% trans "Enter product name and model" %}">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Product SN" %}</label>
+                        <input type="text" name="sn" value="{{ record.sn|default:'' }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 font-mono" 
+                            placeholder="{% trans "Enter serial number" %}">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Product PN" %}</label>
+                        <input type="text" name="pn" value="{{ record.pn|default:'' }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 font-mono" 
+                            placeholder="{% trans "Enter part number" %}">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Original Shipment Date" %}</label>
+                        <input type="text" name="original_ship_date" value="{{ record.original_ship_date|format_date:"" }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50" 
+                            placeholder="YYYY/MM/DD">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Failure Description" %}</label>
+                        <textarea name="return_reason_description" rows="4" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50" 
+                            placeholder="{% trans "Describe the failure or issue" %}">{{ record.return_reason_description|default:'' }}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Root Cause Analysis (RCA)" %}</label>
+                        <textarea name="rca" rows="4" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50" 
+                            placeholder="{% trans "Analyze and describe the root cause" %}">{{ record.rca|default:'' }}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Resolved" %}</label>
+                        <select name="resolved" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50">
+                            <option value="False" {% if not record or not record.resolved %}selected{% endif %}>{% trans "No" %}</option>
+                            <option value="True" {% if record and record.resolved %}selected{% endif %}>{% trans "Yes" %}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Repair Cost" %}</label>
+                        <input type="text" name="after_sales_cost" value="{{ record.after_sales_cost|default:'' }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50" 
+                            placeholder="{% trans "Enter repair cost" %}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path> 
+                        </svg>
+                    </div>
+                    <h2 class="text-lg font-semibold text-gray-900">{% trans "Shipping Information" %}</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Customer Needs to Return" %}</label>
+                        <select name="customer_return_required" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50">
+                            <option value="False" {% if not record or not record.customer_return_required %}selected{% endif %}>{% trans "No" %}</option>
+                            <option value="True" {% if record and record.customer_return_required %}selected{% endif %}>{% trans "Yes" %}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Shipment Date" %}</label>
+                        <input type="text" name="ship_date" value="{{ record.ship_date|format_date:"" }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50" 
+                            placeholder="YYYY/MM/DD">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Waybill No." %}</label>
+                        <input type="text" name="tracking_no" value="{{ record.tracking_no|default:'' }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 font-mono" 
+                            placeholder="{% trans "Enter waybill number" %}">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Warehouse" %}</label>
+                        <input type="text" name="source_warehouse" value="{{ record.source_warehouse|default:'' }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50" 
+                            placeholder="{% trans "Enter warehouse name" %}">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Warehouse Out No." %}</label>
+                        <input type="text" name="outbound_order_no" value="{{ record.outbound_order_no|default:'' }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 font-mono" 
+                            placeholder="{% trans "Enter warehouse out number" %}">
+                    </div>
+                    <div class="lg:col-span-3">
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Consignee Info" %}</label>
+                        <textarea name="shipping_info" rows="2" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50" 
+                            placeholder="{% trans "Enter consignee information" %}">{{ record.shipping_info|default:'' }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Shipped Item Name" %}</label>
+                        <input type="text" name="shipped_item_name" value="{{ record.shipped_item_name|default:'' }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50" 
+                            placeholder="{% trans "Enter shipped item name" %}">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Return SN" %}</label>
+                        <input type="text" name="r_sn" value="{{ record.r_sn|default:'' }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 font-mono" 
+                            placeholder="{% trans "Enter return serial number" %}">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Return PN" %}</label>
+                        <input type="text" name="r_pn" value="{{ record.r_pn|default:'' }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 font-mono" 
+                            placeholder="{% trans "Enter return part number" %}">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{% trans "Equipment No." %}</label>
+                        <input type="text" name="equipment_no" value="{{ record.equipment_no|default:'' }}" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 font-mono" 
+                            placeholder="{% trans "Enter equipment number" %}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                <button type="submit" 
+                    class="inline-flex items-center justify-center px-8 py-3 bg-blue-600 text-white font-medium rounded-xl shadow-lg hover:bg-blue-700 hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                    aria-label="{% if record %}{% trans "Update ticket" %}{% else %}{% trans "Create ticket" %}{% endif %}">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        {% if record %}
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        {% else %}
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        {% endif %}
+                    </svg>
+                    {% if record %}{% trans "Update Ticket" %}{% else %}{% trans "Create Ticket" %}{% endif %}
+                </button>
+                <a href="{% url 'product:aftersales_list' %}" 
+                    class="inline-flex items-center justify-center px-8 py-3 bg-gray-600 text-white font-medium rounded-xl shadow-lg hover:bg-gray-700 hover:shadow-xl transition-all duration-200"
+                    aria-label="{% trans "Cancel and return to list" %}">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                    {% trans "Cancel" %}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

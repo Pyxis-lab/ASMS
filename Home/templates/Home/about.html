@@ -1,0 +1,52 @@
+	{% extends "base.html" %}
+	{% load static %}
+	{% load i18n %}
+	{% block content %}
+	<!-- About Page Content -->
+	<div class="bg-white overflow-hidden">
+	    <!-- Header Section -->
+	    <div class="relative pb-32 bg-gradient-to-br from-blue-600 to-indigo-700">
+	        <!-- Decorative shapes -->
+	        <div class="absolute inset-0">
+	            <img class="absolute h-full w-full object-cover" src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="" style="opacity: 0.2;">
+	            <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-700 mix-blend-multiply"></div>
+	        </div>
+	        <div class="relative max-w-7xl mx-auto py-24 px-4 sm:py-32 sm:px-6 lg:px-8 text-center">
+	            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+	                {% trans "About Us" %}
+	            </h1>
+	            <p class="mt-6 max-w-lg mx-auto text-xl text-indigo-100">
+	                {% trans "Empowering management through technology." %}
+	            </p>
+	        </div>
+	    </div>
+	    <!-- Main Body Section -->
+	    <div class="relative">
+	        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+	            <div class="-mt-32 bg-white rounded-lg shadow-xl overflow-hidden lg:grid lg:grid-cols-2 lg:gap-4">
+	                <!-- Text Content -->
+	                <div class="pt-10 pb-12 px-6 sm:pt-16 sm:px-16 lg:py-16 lg:pr-0 xl:py-20 xl:px-20">
+	                    <div class="lg:self-center">
+	                        <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+	                            <span class="block">{% trans "Who we are" %}</span>
+	                        </h2>
+	                        <p class="mt-4 text-lg leading-6 text-gray-500">
+	                            {% trans "We are dedicated to providing top-tier management solutions. Our system is designed to streamline operations, enhance productivity, and drive growth for organizations of all sizes." %}
+	                        </p>
+	                        <p class="mt-4 text-lg leading-6 text-gray-500">
+	                            {% trans "With a focus on user experience and robust functionality, ASMA stands at the forefront of management innovation." %}
+	                        </p>
+	                        <a href="#" class="mt-8 bg-blue-600 btn-hover inline-flex items-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white shadow hover:bg-blue-700 transition-colors">
+	                            {% trans "Learn More" %}
+	                        </a>
+	                    </div>
+	                </div>
+	                <!-- Image/Side Visual -->
+	                <div class="aspect-w-16 aspect-h-9 hidden lg:block">
+	                    <img class="transform translate-x-6 translate-y-6 rounded-md object-cover shadow-lg w-full h-full" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Team working">
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	{% endblock %}

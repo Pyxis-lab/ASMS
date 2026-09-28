@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 flex items-center justify-center py-12">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+            <div class="bg-red-600 px-6 py-8 text-white">
+                <div class="flex items-center justify-center">
+                    <div class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h1 class="text-2xl font-bold text-center mt-4">{% trans "Delete Ticket" %}</h1>
+                <p class="text-center text-red-100 mt-2">{% trans "Are you sure you want to delete this ticket?" %}</p>
+            </div>
+
+            <div class="p-8">
+                <div class="bg-gray-50 rounded-xl p-6 mb-8">
+                    <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">{% trans "Ticket Information" %}</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Ticket No." %}</div>
+                            <div class="text-lg font-semibold text-gray-900">{{ object.after_sales_no }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Customer" %}</div>
+                            <div class="text-lg font-semibold text-gray-900">{{ object.user_name|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Product" %}</div>
+                            <div class="text-gray-900">{{ object.product_name_model|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Service Type" %}</div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                {{ object.after_sales_type|default:"-" }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <form method="post" class="flex-1">
+                        {% csrf_token %}
+                        <button type="submit" 
+                            class="w-full inline-flex items-center justify-center px-8 py-3 bg-red-600 text-white font-medium rounded-xl shadow-lg hover:bg-red-700 hover:shadow-xl transition-all duration-200"
+                            aria-label="{% trans "Confirm deletion" %}">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            {% trans "Confirm Delete" %}
+                        </button>
+                    </form>
+                    <a href="{% url 'product:aftersales_detail' object.pk %}" 
+                        class="inline-flex items-center justify-center px-8 py-3 bg-gray-600 text-white font-medium rounded-xl shadow-lg hover:bg-gray-700 hover:shadow-xl transition-all duration-200"
+                        aria-label="{% trans "Cancel and return to ticket" %}">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        {% trans "Cancel" %}
+                    </a>
+                </div>
+
+                <p class="text-sm text-gray-500 text-center mt-6">
+                    {% trans "This action cannot be undone. The ticket and all related data will be permanently deleted." %}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

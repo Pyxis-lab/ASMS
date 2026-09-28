@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load product_filters %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50">
+    <div class="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                <div>
+                    <nav class="flex items-center gap-2 mb-4 text-sm text-blue-100">
+                        <a href="{% url 'product:aftersales_list' %}" class="hover:text-white transition-colors">{% trans "Tickets" %}</a>
+                        <svg class="w-4 h-4 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                        <span class="text-blue-200">{{ record.after_sales_no }}</span>
+                    </nav>
+                    <h1 class="text-3xl font-bold mb-2">{% trans "Ticket Details" %}</h1>
+                    <p class="text-blue-100">{% trans "View detailed information about this after-sales ticket" %}</p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="{% url 'product:aftersales_update' record.pk %}" 
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm text-white font-medium rounded-xl hover:bg-white/20 transition-all duration-200"
+                        aria-label="{% trans "Edit ticket" %}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        {% trans "Edit" %}
+                    </a>
+                    <a href="{% url 'product:aftersales_delete' record.pk %}" 
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-red-600 text-white font-medium rounded-xl hover:bg-red-700 transition-all duration-200"
+                        aria-label="{% trans "Delete ticket" %}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        {% trans "Delete" %}
+                    </a>
+                    <a href="{% url 'product:aftersales_list' %}" 
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm text-white font-medium rounded-xl hover:bg-white/20 transition-all duration-200"
+                        aria-label="{% trans "Back to ticket list" %}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        {% trans "Back to List" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-col gap-6">
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-lg font-semibold text-gray-900">{% trans "Product Receive" %}</h2>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Return Date" %}</div>
+                            <div class="text-gray-900">{{ record.return_date|format_date }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Customer Name" %}</div>
+                            <div class="text-lg font-semibold text-gray-900">{{ record.user_name|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Service Type" %}</div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                {{ record.after_sales_type|default:"-" }}
+                            </span>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Ticket No." %}</div>
+                            <div class="text-lg font-semibold text-gray-900">{{ record.after_sales_no }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Order No." %}</div>
+                            <div class="text-gray-900">{{ record.no|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Project Site" %}</div>
+                            <div class="text-gray-900">{{ record.project_site|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Resolved" %}</div>
+                            {% if record.resolved %}
+                                <span class="text-green-600 font-medium">{% trans "Yes" %}</span>
+                            {% else %}
+                                <span class="text-gray-500">{% trans "No" %}</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Product Name" %}</div>
+                            <div class="text-gray-900">{{ record.product_name_model|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Original Shipment Date" %}</div>
+                            <div class="text-gray-900">{{ record.original_ship_date|format_date }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Out of Warranty" %}</div>
+                            {% if record.out_of_warranty %}
+                                <span class="text-red-600 font-medium">{% trans "Yes" %}</span>
+                            {% else %}
+                                <span class="text-green-600 font-medium">{% trans "No" %}</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Product SN" %}</div>
+                            <div class="text-gray-900 font-mono">{{ record.sn|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Product PN" %}</div>
+                            <div class="text-gray-900 font-mono">{{ record.pn|default:"-" }}</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Failure Description" %}</div>
+                        <div class="text-gray-600 mb-4 whitespace-pre-line break-words">{{ record.return_reason_description|default:"-" }}</div>
+                        <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Root Cause Analysis (RCA)" %}</div>
+                        <div class="text-gray-600 mb-4 whitespace-pre-line break-words">{{ record.rca|default:"-" }}</div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Fee Details" %}</div>
+                                <div class="text-gray-600 whitespace-pre-line break-words">{{ record.charge_details|default:"-" }}</div>
+                            </div>
+                            <div>
+                                <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Repair Cost" %}</div>
+                                <div class="text-gray-900">{{ record.after_sales_cost|default:"-" }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6 mt-6 lg:mt-0">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-lg font-semibold text-gray-900">{% trans "Shipping Information" %}</h2>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Shipment Date" %}</div>
+                            <div class="text-gray-900">{{ record.ship_date|format_date }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Customer Needs to Return" %}</div>
+                            {% if record.customer_return_required %}
+                                <span class="text-blue-600 font-medium">{% trans "Yes" %}</span>
+                            {% else %}
+                                <span class="text-gray-500">{% trans "No" %}</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Shipped Item Name" %}</div>
+                            <div class="text-gray-900">{{ record.shipped_item_name|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Return SN" %}</div>
+                            <div class="text-gray-900 font-mono">{{ record.r_sn|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Return PN" %}</div>
+                            <div class="text-gray-900 font-mono">{{ record.r_pn|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Equipment No." %}</div>
+                            <div class="text-gray-900 font-mono">{{ record.equipment_no|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Warehouse Out No." %}</div>
+                            <div class="text-gray-900 font-mono">{{ record.outbound_order_no|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Consignee Info" %}</div>
+                            <div class="text-gray-600 whitespace-pre-line break-words">{{ record.shipping_info|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Waybill No." %}</div>
+                            <div class="text-gray-900 font-mono">{{ record.tracking_no|default:"-" }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{% trans "Warehouse" %}</div>
+                            <div class="text-gray-900">{{ record.source_warehouse|default:"-" }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
